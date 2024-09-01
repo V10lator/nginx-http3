@@ -7,7 +7,7 @@ apt-get install --allow-change-held-packages --allow-downgrades --allow-remove-e
 -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confold -fy \
 cmake git libmaxminddb-dev wget
 wget -O /etc/apt/trusted.gpg.d/nginx_signing.asc https://nginx.org/keys/nginx_signing.key
-echo deb-src https://nginx.org/packages/mainline/debian trixie nginx \
+echo deb-src https://nginx.org/packages/mainline/debian bookworm nginx \
 >> /etc/apt/sources.list
 echo -e 'Package: *\nPin: origin nginx.org\nPin: release o=nginx\nPin-Priority: 900' \
 > /etc/apt/preferences.d/99nginx
