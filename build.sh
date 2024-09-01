@@ -2,37 +2,36 @@ set -e
 cd /github/home
 echo Install dependencies.
 echo deb http://deb.debian.org/debian trixie-backports main >> /etc/apt/sources.list
-apt-get update > /dev/null 2>&1
+apt-get update
 apt-get install --allow-change-held-packages --allow-downgrades --allow-remove-essential \
 -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confold -fy \
-cmake git libmaxminddb-dev wget > /dev/null 2>&1
-wget -qO /etc/apt/trusted.gpg.d/nginx_signing.asc https://nginx.org/keys/nginx_signing.key
+cmake git libmaxminddb-dev wget
+wget -O /etc/apt/trusted.gpg.d/nginx_signing.asc https://nginx.org/keys/nginx_signing.key
 echo deb-src https://nginx.org/packages/mainline/debian trixie nginx \
 >> /etc/apt/sources.list
 echo -e 'Package: *\nPin: origin nginx.org\nPin: release o=nginx\nPin-Priority: 900' \
 > /etc/apt/preferences.d/99nginx
-apt-get update > /dev/null 2>&1
+apt-get update
 apt-get build-dep --allow-change-held-packages --allow-downgrades --allow-remove-essential \
 -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confold -fy \
-nginx > /dev/null 2>&1
+nginx
 echo Fetch NGINX source code.
-apt-get source nginx > /dev/null 2>&1
+apt-get source nginx
 echo Fetch quictls source code.
 cd nginx-*
 mkdir debian/modules
 cd debian/modules
-git clone --depth 1 --recursive https://github.com/quictls/openssl > /dev/null 2>&1
+git clone --depth 1 --recursive https://github.com/quictls/openssl 
 echo Fetch additional dependencies.
-git clone --depth 1 --recursive https://github.com/google/ngx_brotli > /dev/null 2>&1
+git clone --depth 1 --recursive https://github.com/google/ngx_brotli
 mkdir ngx_brotli/deps/brotli/out
 cd ngx_brotli/deps/brotli/out
-cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=installed .. \
-> /dev/null 2>&1
-cmake --build . --config Release --target brotlienc > /dev/null 2>&1
+cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=installed ..
+cmake --build . --config Release --target brotlienc
 cd ../../../..
-git clone --depth 1 --recursive https://github.com/leev/ngx_http_geoip2_module > /dev/null 2>&1
-git clone --depth 1 --recursive https://github.com/openresty/headers-more-nginx-module > /dev/null 2>&1
-git clone --depth 1 --recursive https://github.com/aperezdc/ngx-fancyindex > /dev/null 2>&1
+git clone --depth 1 --recursive https://github.com/leev/ngx_http_geoip2_module
+git clone --depth 1 --recursive https://github.com/openresty/headers-more-nginx-module
+git clone --depth 1 --recursive https://github.com/aperezdc/ngx-fancyindex
 echo Build nginx.
 cd ..
 sed -i 's|NGINX Packaging <nginx-packaging@f5.com>|V10lator <v10lator@myway.de>|g' control
@@ -45,7 +44,7 @@ sed -i 's|--with-compat||g' rules
 sed -i 's|--with-http_addition_module --with-http_auth_request_module --with-http_dav_module --with-http_flv_module --with-http_gunzip_module --with-http_gzip_static_module --with-http_mp4_module --with-http_random_index_module --with-http_realip_module --with-http_secure_link_module --with-http_slice_module --with-http_ssl_module --with-http_stub_status_module --with-http_sub_module|--with-http_auth_request_module --with-http_dav_module --with-http_flv_module --with-http_gunzip_module --with-http_gzip_static_module --with-http_ssl_module --with-http_stub_status_modul|g' rules
 sed -i 's|--with-mail --with-mail_ssl_module --with-stream --with-stream_realip_module --with-stream_ssl_module --with-stream_ssl_preread_module|--with-pcre-jit --with-stream --with-stream_realip_module --with-stream_ssl_module --with-stream_ssl_preread_module --without-select_module --without-poll_module --without-http_browser_module --without-http_charset_module --without-http_empty_gif_module --without-http_limit_conn_module --without-http_memcached_module --without-http_mirror_module --without-http_split_clients_module --without-http_upstream_hash_module --without-http_upstream_ip_hash_module --without-http_upstream_keepalive_module --without-http_upstream_least_conn_module --without-http_upstream_random_module --without-http_upstream_zone_module --with-openssl=$(CURDIR)/debian/modules/openssl|g' rules
 cd ..
-dpkg-buildpackage -b > /dev/null 2>&1
+dpkg-buildpackage -b
 cd ..
 cp nginx_*.deb nginx.deb
 hash=$(sha256sum nginx.deb | awk '{print $1}')
