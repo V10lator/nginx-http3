@@ -7,7 +7,7 @@ dpkg --add-architecture arm64
 apt-get update
 apt-get install --allow-change-held-packages --allow-downgrades --allow-remove-essential \
 -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confold -fy \
-cmake git libmaxminddb-dev wget build-essential crossbuild-essential-arm64
+cmake git libmaxminddb-dev wget libssl-dev libpcre2-dev zlib1g-dev build-essential crossbuild-essential-arm64
 
 CFLAGS="-mcpu=neoverse-n1+crc+crypto -ftree-vectorize -ftree-slp-vectorize -mtls-dialect=gnu2 -pipe -fno-ident -flto=8 -fdevirtualize-at-ltrans -Wno-error"
 CXXFLAGS="${CFLAGS} -fomit-frame-pointer"
