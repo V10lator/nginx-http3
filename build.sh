@@ -9,7 +9,7 @@ apt-get install --allow-change-held-packages --allow-downgrades --allow-remove-e
 -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confold -fy \
 cmake git libmaxminddb-dev wget build-essential crossbuild-essential-arm64
 
-CFLAGS="-mlittle-endian -mabi=lp64 -mcpu=neoverse-n1+crc+crypto -fasynchronous-unwind-tables -dumpbase null -O3 -ftree-vectorize -ftree-slp-vectorize -mtls-dialect=gnu2 -pipe -fno-ident -flto=8 -fdevirtualize-at-ltrans -Wno-error"
+CFLAGS="-mcpu=neoverse-n1+crc+crypto -ftree-vectorize -ftree-slp-vectorize -mtls-dialect=gnu2 -pipe -fno-ident -flto=8 -fdevirtualize-at-ltrans -Wno-error"
 CXXFLAGS="${CFLAGS} -fomit-frame-pointer"
 export CFLAGS
 export CXXFLAGS
