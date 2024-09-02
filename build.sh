@@ -1,4 +1,10 @@
 set -e
+
+CFLAGS="-mlittle-endian -mabi=lp64 -mcpu=neoverse-n1+crc+crypto -fasynchronous-unwind-tables -dumpbase null -O3 -ftree-vectorize -ftree-slp-vectorize -mtls-dialect=gnu2 -pipe -fno-ident -flto=8 -fdevirtualize-at-ltrans -Wno-error"
+CXXFLAGS="${CFLAGS} -fomit-frame-pointer"
+export CFLAGS
+export CXXFLAGS
+
 cd /github/home
 echo Install dependencies.
 echo deb http://deb.debian.org/debian trixie-backports main >> /etc/apt/sources.list
@@ -37,7 +43,8 @@ cd ..
 sed -i 's|NGINX Packaging <nginx-packaging@f5.com>|V10lator <v10lator@myway.de>|g' control
 sed -i 's|export DEB_CFLAGS_MAINT_APPEND=.*|export DEB_CFLAGS_MAINT_APPEND=|g' rules
 sed -i 's|export DEB_LDFLAGS_MAINT_APPEND=.*|export DEB_LDFLAGS_MAINT_APPEND=|g' rules
-sed -i 's|CFLAGS=""|CFLAGS="-Wno-error"|g' rules
+sed -i 's|CFLAGS=""|CFLAGS="${CFLAGS}"|g' rules
+sed -i 's|CXXFLAGS=""|CXXFLAGS="${CXXFLAGS}"|g' rules
 sed -i 's|--sbin-path=/usr/sbin/nginx|--sbin-path=/usr/sbin/nginx --add-module=$(CURDIR)/debian/modules/ngx_brotli --add-module=$(CURDIR)/debian/modules/ngx_http_geoip2_module --add-module=$(CURDIR)/debian/modules/headers-more-nginx-module --add-module=$(CURDIR)/debian/modules/ngx-fancyindex|g' rules
 sed -i 's|--http-scgi-temp-path=/var/cache/nginx/scgi_temp --user=nginx --group=nginx|--user=www-data --group=www-data|g' rules
 sed -i 's|--with-compat||g' rules
